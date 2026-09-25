@@ -35,7 +35,7 @@ function CoupleProfile() {
           
           <h3 className="text-xs uppercase tracking-[0.2em] text-[#8B1E41] font-bold mb-2">The Groom</h3>
           <h4 className="text-2xl md:text-3xl font-serif text-gray-800 font-bold mb-1">
-            [Groom's Name]
+            Hafiz Mawlana Albab Ahmed
           </h4>
           
           {/* Divider */}
@@ -43,7 +43,7 @@ function CoupleProfile() {
           
           {/* Family Background */}
           <p className="text-gray-600 text-sm leading-relaxed">
-            Eldest son of Mr. [Father's Name] and Mrs. [Mother's Name]. 
+            Eldest son of Hafiz Abdur Rouf R. 
             <br className="mb-2" />
             <span className="text-gray-400 text-xs">Currently working as a [Profession] at [Company Name].</span>
           </p>
@@ -75,7 +75,7 @@ function CoupleProfile() {
           
           <h3 className="text-xs uppercase tracking-[0.2em] text-[#8B1E41] font-bold mb-2">The Bride</h3>
           <h4 className="text-2xl md:text-3xl font-serif text-gray-800 font-bold mb-1">
-            [Bride's Name]
+            Aleema Nusaifa Jannat
           </h4>
           
           {/* Divider */}
@@ -83,7 +83,7 @@ function CoupleProfile() {
           
           {/* Family Background */}
           <p className="text-gray-600 text-sm leading-relaxed">
-            Youngest daughter of Mr. [Father's Name] and Mrs. [Mother's Name].
+            Youngest daughter of Mawlana Hossain Ahmed.
             <br className="mb-2" />
             <span className="text-gray-400 text-xs">Graduated from [University Name] in [Subject].</span>
           </p>

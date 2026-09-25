@@ -16,7 +16,7 @@ function Footer() {
 
         {/* WhatsApp Contact Button */}
         <a 
-          href="https://wa.me/8801XXXXXXXXX" // এখানে আপনার আসল নাম্বার বসাবেন
+          href="https://wa.me/8801722291118" 
           target="_blank" 
           rel="noopener noreferrer"
           className="flex items-center gap-1.5 bg-white text-[#8B1E41] px-4 py-1.5 rounded-full font-bold hover:bg-gray-100 transition shadow-sm mb-3 text-xs"
