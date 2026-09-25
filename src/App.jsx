@@ -15,7 +15,7 @@ function App() {
       <HeroSection />
       <OurStory />
       <Articles />
-      <EventSchedule />
+      {/* <EventSchedule /> */}
       <PhotoGallery />
       <GuestBook />
       <Footer/>
