@@ -7,8 +7,6 @@ import GuestBook from "./components/GuestBook";
 import Articles from "./components/Articles";
 import Footer from "./components/Footer";
 
-
-
 function App() {
   return (
     <div className="bg-rose-50 min-h-screen font-sans text-gray-800 w-full overflow-x-hiden ">
@@ -18,44 +16,9 @@ function App() {
       {/* <EventSchedule /> */}
       <PhotoGallery />
       <GuestBook />
-      <Footer/>
+      <Footer />
     </div>
   );
 }
 
 export default App;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
