@@ -30,19 +30,7 @@ const EventSchedule = () => {
           </div>
         </div>
 
-        {/* লোকেশন / ভেন্যু */}
-        <div className="mt-12 bg-white p-6 rounded-2xl shadow-md text-center">
-          <h3 className="text-xl font-bold text-gray-800 mb-2">📍 ভেন্যু</h3>
-          <p className="text-gray-600 mb-4">সিলেট ক্লাব লিমিটেড, টিলাগড়, সিলেট</p>
-          <a 
-            href="https://maps.google.com" 
-            target="_blank" 
-            rel="noreferrer"
-            className="inline-block bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2 px-6 rounded-full transition duration-300"
-          >
-            গুগল ম্যাপে দেখুন
-          </a>
-        </div>
+        
       </div>
     </section>
   );
