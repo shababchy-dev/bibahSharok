@@ -30,7 +30,7 @@ const articlesData = [
     content: "To Albab Bhai, I still remember when you were a little baby and you would sleep next to me and your bhaisab, and now I cant believe you are getting married!!! I am so happy for you and Jannat, May Allah put barakah in your marriage. Just because you are getting married don't forget to message me lol. Love and Duas from your Favourite Bhabi",
   },
   {
-    id: 5, // ID ঠিক করা হয়েছে
+    id: 4, // ID ঠিক করা হয়েছে
     isEditorial: false,
     title: "ছোট্ট আলবাব থেকে আজকের বর",
     author: "ছোট আপা",
