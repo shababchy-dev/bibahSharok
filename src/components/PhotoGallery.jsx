@@ -17,16 +17,16 @@ function PhotoGallery() {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
 
-  // জুম ইফেক্ট এবং টাইমার ট্র্যাক করার জন্য State & Ref
+  // জুম ইফেক্ট এর State & Refs
   const [heldImage, setHeldImage] = useState(null);
   const pressTimer = useRef(null);
+  const touchStartPos = useRef({ x: 0, y: 0 });
 
-  // Cloudinary Configuration (প্রোডাকশনে .env ফাইল ব্যবহার করা উচিত)
-  // Vite ব্যবহার করলে process.env এর বদলে import.meta.env.VITE_CLOUD_NAME ব্যবহার করবেন
-  const CLOUD_NAME = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || "i8fwrztt";
-  const UPLOAD_PRESET = process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET || "bibah_preset";
+  // Cloudinary Configuration
+  const CLOUD_NAME = "i8fwrztt";
+  const UPLOAD_PRESET = "bibah_preset";
 
-  // Authentication State Check
+  // Check Auth State
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -47,7 +47,6 @@ function PhotoGallery() {
     return () => unsubscribe();
   }, []);
 
-  // Auth Handlers
   const handleLogin = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
@@ -64,7 +63,6 @@ function PhotoGallery() {
     }
   };
 
-  // Image Upload Handler
   const handleImageUpload = async (event) => {
     const file = event.target.files?.[0];
     if (!file || !user) return;
@@ -88,7 +86,7 @@ function PhotoGallery() {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       if (!response.ok) {
@@ -114,22 +112,52 @@ function PhotoGallery() {
     }
   };
 
-  // --- Long Press Zoom Logic (Mobile & Desktop Optimized) ---
-  const startHold = (imgUrl) => {
-    // ৩০০ মিলি-সেকেন্ডের ডিলে, যাতে ইউজার নরমাল স্ক্রল করতে পারে
+  // ==========================================
+  // আপডেটেড জুম লজিক (Touch & Mouse)
+  // ==========================================
+
+  const handleMouseDown = (imgUrl) => {
     pressTimer.current = setTimeout(() => {
       setHeldImage(imgUrl);
-    }, 300);
+    }, 350);
   };
 
-  const endHold = () => {
-    // ফিঙ্গার সরিয়ে নিলে বা স্ক্রল করা শুরু করলে টাইমার বাতিল হবে
-    if (pressTimer.current) {
-      clearTimeout(pressTimer.current);
-    }
+  const handleMouseUpOrLeave = () => {
+    if (pressTimer.current) clearTimeout(pressTimer.current);
     setHeldImage(null);
   };
-  // ---------------------------------------------------------
+
+  const handleTouchStart = (e, imgUrl) => {
+    touchStartPos.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+
+    pressTimer.current = setTimeout(() => {
+      setHeldImage(imgUrl);
+    }, 350);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!pressTimer.current) return;
+
+    const currentX = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    const diffX = Math.abs(currentX - touchStartPos.current.x);
+    const diffY = Math.abs(currentY - touchStartPos.current.y);
+
+    if (diffX > 10 || diffY > 10) {
+      clearTimeout(pressTimer.current);
+      pressTimer.current = null;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (pressTimer.current) clearTimeout(pressTimer.current);
+    setHeldImage(null);
+  };
+
+  // ==========================================
 
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto relative">
@@ -164,7 +192,9 @@ function PhotoGallery() {
             <label
               htmlFor="upload-btn"
               className={`bg-[#8B1E41] text-white px-8 py-3.5 rounded-full font-bold shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 cursor-pointer ${
-                isUploading ? "opacity-70 pointer-events-none" : "hover:bg-[#5c1028]"
+                isUploading
+                  ? "opacity-70 pointer-events-none"
+                  : "hover:bg-[#5c1028]"
               }`}
             >
               {isUploading ? "Uploading your memory..." : "📸 Upload Photo"}
@@ -186,7 +216,7 @@ function PhotoGallery() {
         )}
       </div>
 
-      {/* Gallery Grid (Masonry Layout) */}
+      {/* Gallery Grid */}
       {images.length === 0 ? (
         <div className="text-center py-12 text-gray-400 border-2 border-dashed border-rose-100 rounded-3xl w-full">
           এখনো কোনো ছবি যুক্ত করা হয়নি।
@@ -196,30 +226,22 @@ function PhotoGallery() {
           {images.map((img) => (
             <div
               key={img.id}
-              // [-webkit-touch-callout:none] মোবাইলে ডিফল্ট মেনু পপআপ বন্ধ করবে
               className="relative group break-inside-avoid rounded-xl overflow-hidden bg-gray-100 mb-4 shadow-sm cursor-pointer select-none [-webkit-touch-callout:none] active:scale-95 transition-transform duration-150"
-              
-              // ডেস্কটপ ইভেন্ট
-              onMouseDown={() => startHold(img.imageUrl)}
-              onMouseUp={endHold}
-              onMouseLeave={endHold}
-              
-              // মোবাইল টাচ ইভেন্ট
-              onTouchStart={() => startHold(img.imageUrl)}
-              onTouchEnd={endHold}
-              onTouchMove={endHold} // স্ক্রল করার সময় জুম ক্যানসেল হবে
-              
-              // রাইট-ক্লিক মেনু ডিজেবল করা
+              onMouseDown={() => handleMouseDown(img.imageUrl)}
+              onMouseUp={handleMouseUpOrLeave}
+              onMouseLeave={handleMouseUpOrLeave}
+              onTouchStart={(e) => handleTouchStart(e, img.imageUrl)}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
               onContextMenu={(e) => e.preventDefault()}
             >
               <img
                 src={img.imageUrl}
                 alt="Wedding Moment"
                 loading="lazy"
-                className="w-full h-auto object-cover transform group-hover:scale-105 transition duration-500"
+                className="w-full h-auto object-cover transform group-hover:scale-105 transition duration-500 pointer-events-none"
               />
 
-              {/* Uploader overlay on hover */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-3 pointer-events-none">
                 <div className="flex items-center gap-2 text-white">
                   {img.uploaderPhoto ? (
@@ -243,7 +265,7 @@ function PhotoGallery() {
         </div>
       )}
 
-      {/* জুম-অন-হোল্ড পপআপ */}
+      {/* জুম পপআপ */}
       {heldImage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in pointer-events-none">
           <div className="relative max-w-full max-h-[85vh] rounded-2xl overflow-hidden shadow-2xl border border-white/10 scale-100 transform transition-transform duration-300 animate-zoom-in">
