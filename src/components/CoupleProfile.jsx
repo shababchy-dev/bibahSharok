@@ -28,7 +28,7 @@ function CoupleProfile() {
           <span className="text-[10px] md:text-xs uppercase tracking-wider text-[#8B1E41] font-bold mb-1">
             The Groom
           </span>
-          <h3 className="text-lg md:text-2xl font-serif text-gray-800 font-bold text-center">
+          <h3 className="text-sm md:text-2xl font-serif text-gray-800 font-bold text-center">
             Hafiz Mawlana Albab
           </h3>
         </div>
@@ -52,7 +52,7 @@ function CoupleProfile() {
           <span className="text-[10px] md:text-xs uppercase tracking-wider text-[#8B1E41] font-bold mb-1">
             The Bride
           </span>
-          <h3 className="text-lg md:text-2xl font-serif text-gray-800 font-bold text-center">
+          <h3 className="text-sm md:text-2xl font-serif text-gray-800 font-bold text-center">
             Aleema Nusaifa Jannat
           </h3>
         </div>
