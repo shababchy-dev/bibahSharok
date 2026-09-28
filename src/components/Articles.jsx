@@ -55,7 +55,7 @@ const Articles = () => {
                   {/* মূল লেখা */}
                   <div className="text-gray-600 text-base md:text-lg leading-relaxed font-sans relative">
                     <p
-                      className={`transition-all duration-500 ${!isExpanded ? "line-clamp-2" : ""}`}
+                      className={`transition-all duration-500 text-justify ${!isExpanded ? "line-clamp-2" : ""}`}
                     >
                       {article.content}
                     </p>
