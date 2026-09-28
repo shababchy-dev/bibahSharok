@@ -86,7 +86,7 @@ function PhotoGallery() {
         {
           method: "POST",
           body: formData,
-        },
+        }
       );
 
       if (!response.ok) {
@@ -113,48 +113,40 @@ function PhotoGallery() {
   };
 
   // ==========================================
-  // আপডেটেড জুম লজিক (Touch & Mouse)
+  // রিফ্যাক্টরড প্রোফেশনাল জুম লজিক (প্রথম ক্লিকেই কাজ করার নিশ্চয়তা)
   // ==========================================
 
-  const handleMouseDown = (imgUrl) => {
+  const startZoom = (imgUrl) => {
+    if (pressTimer.current) clearTimeout(pressTimer.current);
     pressTimer.current = setTimeout(() => {
       setHeldImage(imgUrl);
-    }, 350);
+    }, 300);
   };
 
-  const handleMouseUpOrLeave = () => {
-    if (pressTimer.current) clearTimeout(pressTimer.current);
+  const cancelZoom = () => {
+    if (pressTimer.current) {
+      clearTimeout(pressTimer.current);
+      pressTimer.current = null;
+    }
     setHeldImage(null);
   };
 
   const handleTouchStart = (e, imgUrl) => {
-    touchStartPos.current = {
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY,
-    };
-
-    pressTimer.current = setTimeout(() => {
-      setHeldImage(imgUrl);
-    }, 350);
+    const touch = e.touches[0];
+    touchStartPos.current = { x: touch.clientX, y: touch.clientY };
+    startZoom(imgUrl);
   };
 
   const handleTouchMove = (e) => {
     if (!pressTimer.current) return;
+    const touch = e.touches[0];
+    const diffX = Math.abs(touch.clientX - touchStartPos.current.x);
+    const diffY = Math.abs(touch.clientY - touchStartPos.current.y);
 
-    const currentX = e.touches[0].clientX;
-    const currentY = e.touches[0].clientY;
-    const diffX = Math.abs(currentX - touchStartPos.current.x);
-    const diffY = Math.abs(currentY - touchStartPos.current.y);
-
+    // ১০ পিক্সেলের বেশি নড়লে স্ক্রল হিসেবে ধরে জুম বাতিল হবে
     if (diffX > 10 || diffY > 10) {
-      clearTimeout(pressTimer.current);
-      pressTimer.current = null;
+      cancelZoom();
     }
-  };
-
-  const handleTouchEnd = () => {
-    if (pressTimer.current) clearTimeout(pressTimer.current);
-    setHeldImage(null);
   };
 
   // ==========================================
@@ -192,9 +184,7 @@ function PhotoGallery() {
             <label
               htmlFor="upload-btn"
               className={`bg-[#8B1E41] text-white px-8 py-3.5 rounded-full font-bold shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 cursor-pointer ${
-                isUploading
-                  ? "opacity-70 pointer-events-none"
-                  : "hover:bg-[#5c1028]"
+                isUploading ? "opacity-70 pointer-events-none" : "hover:bg-[#5c1028]"
               }`}
             >
               {isUploading ? "Uploading your memory..." : "📸 Upload Photo"}
@@ -227,12 +217,18 @@ function PhotoGallery() {
             <div
               key={img.id}
               className="relative group break-inside-avoid rounded-xl overflow-hidden bg-gray-100 mb-4 shadow-sm cursor-pointer select-none [-webkit-touch-callout:none] active:scale-95 transition-transform duration-150"
-              onMouseDown={() => handleMouseDown(img.imageUrl)}
-              onMouseUp={handleMouseUpOrLeave}
-              onMouseLeave={handleMouseUpOrLeave}
+              
+              // মাউস ইভেন্ট
+              onMouseDown={() => startZoom(img.imageUrl)}
+              onMouseUp={cancelZoom}
+              onMouseLeave={cancelZoom}
+              
+              // টাচ ইভেন্ট (প্রথম ক্লিকেই কাজ করার জন্য অপ্টিমাইজড)
               onTouchStart={(e) => handleTouchStart(e, img.imageUrl)}
               onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
+              onTouchEnd={cancelZoom}
+              onTouchCancel={cancelZoom}
+              
               onContextMenu={(e) => e.preventDefault()}
             >
               <img
