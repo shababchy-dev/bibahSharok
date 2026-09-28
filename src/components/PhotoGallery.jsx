@@ -21,6 +21,9 @@ function PhotoGallery() {
   const [heldImage, setHeldImage] = useState(null);
   const pressTimer = useRef(null);
   const touchStartPos = useRef({ x: 0, y: 0 });
+  
+  // নতুন Ref: টাচ ডিভাইসের ঘোস্ট ইভেন্ট ব্লক করার জন্য
+  const isTouchDevice = useRef(false);
 
   // Cloudinary Configuration
   const CLOUD_NAME = "i8fwrztt";
@@ -113,7 +116,7 @@ function PhotoGallery() {
   };
 
   // ==========================================
-  // রিফ্যাক্টরড প্রোফেশনাল জুম লজিক (প্রথম ক্লিকেই কাজ করার নিশ্চয়তা)
+  // রিফ্যাক্টরড জুম লজিক (Ghost Event Fix)
   // ==========================================
 
   const startZoom = (imgUrl) => {
@@ -131,7 +134,9 @@ function PhotoGallery() {
     setHeldImage(null);
   };
 
+  // --- মোবাইল টাচ ইভেন্ট ---
   const handleTouchStart = (e, imgUrl) => {
+    isTouchDevice.current = true; // টাচ ডিভাইস সনাক্ত করা হলো
     const touch = e.touches[0];
     touchStartPos.current = { x: touch.clientX, y: touch.clientY };
     startZoom(imgUrl);
@@ -143,10 +148,20 @@ function PhotoGallery() {
     const diffX = Math.abs(touch.clientX - touchStartPos.current.x);
     const diffY = Math.abs(touch.clientY - touchStartPos.current.y);
 
-    // ১০ পিক্সেলের বেশি নড়লে স্ক্রল হিসেবে ধরে জুম বাতিল হবে
     if (diffX > 10 || diffY > 10) {
       cancelZoom();
     }
+  };
+
+  // --- ডেস্কটপ মাউস ইভেন্ট ---
+  const handleMouseDown = (imgUrl) => {
+    if (isTouchDevice.current) return; // মোবাইলে মাউস ইভেন্ট ইগনোর করবে
+    startZoom(imgUrl);
+  };
+
+  const handleMouseUpOrLeave = () => {
+    if (isTouchDevice.current) return; // মোবাইলে মাউস লিভ কনফ্লিক্ট দূর করবে
+    cancelZoom();
   };
 
   // ==========================================
@@ -218,12 +233,10 @@ function PhotoGallery() {
               key={img.id}
               className="relative group break-inside-avoid rounded-xl overflow-hidden bg-gray-100 mb-4 shadow-sm cursor-pointer select-none [-webkit-touch-callout:none] active:scale-95 transition-transform duration-150"
               
-              // মাউস ইভেন্ট
-              onMouseDown={() => startZoom(img.imageUrl)}
-              onMouseUp={cancelZoom}
-              onMouseLeave={cancelZoom}
+              onMouseDown={() => handleMouseDown(img.imageUrl)}
+              onMouseUp={handleMouseUpOrLeave}
+              onMouseLeave={handleMouseUpOrLeave}
               
-              // টাচ ইভেন্ট (প্রথম ক্লিকেই কাজ করার জন্য অপ্টিমাইজড)
               onTouchStart={(e) => handleTouchStart(e, img.imageUrl)}
               onTouchMove={handleTouchMove}
               onTouchEnd={cancelZoom}
