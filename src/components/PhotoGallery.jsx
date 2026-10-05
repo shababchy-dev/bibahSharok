@@ -167,7 +167,7 @@ function PhotoGallery() {
   // ==========================================
 
   return (
-    <div className="p-4 md:p-8 max-w-6xl mx-auto relative">
+    <div id="gallery" className="p-4 md:p-8 max-w-6xl mx-auto relative">
       {/* Upload Header Section */}
       <div className="bg-white p-6 rounded-3xl shadow-sm border border-rose-100 mb-8 text-center flex flex-col items-center justify-center">
         <h3 className="text-xl font-bold font-serif text-[#8B1E41] mb-2">

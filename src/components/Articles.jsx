@@ -11,7 +11,7 @@ const Articles = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-rose-50/30">
+    <section id="articles" className="py-16 md:py-24 bg-rose-50/30">
       <div className="max-w-4xl mx-auto px-4 space-y-12">
         {articlesData.map((article) => {
           // প্রথম লেখাটি (সম্পাদকীয়) সবসময় খোলা থাকবে
@@ -20,7 +20,7 @@ const Articles = () => {
           return (
             <article
               key={article.id}
-              className={`bg-white rounded-[32px] overflow-hidden transition-all duration-500 ease-in-out border border-rose-100 shadow-[0_8px_30px_rgb(139,30,65,0.08)] ${!article.isEditorial ? "cursor-pointer hover:shadow-[0_8px_30px_rgb(139,30,65,0.15)]" : ""}`}
+              className={`bg-white rounded-4xl overflow-hidden transition-all duration-500 ease-in-out border border-rose-100 shadow-[0_8px_30px_rgb(139,30,65,0.08)] ${!article.isEditorial ? "cursor-pointer hover:shadow-[0_8px_30px_rgb(139,30,65,0.15)]" : ""}`}
               onClick={() => !article.isEditorial && toggleExpand(article.id)} // শুধুমাত্র সম্পাদকীয় ছাড়া বাকিগুলোতে ক্লিক কাজ করবে
             >
               <div className="flex flex-col md:flex-row">
@@ -34,7 +34,7 @@ const Articles = () => {
                 </div>
 
                 {/* কন্টেন্ট সেকশন */}
-                <div className="w-full md:w-3/5 p-8 md:p-10 flex flex-col justify-center">
+                <div className="w-full md:w-3/5 p-4 md:p-10 flex flex-col justify-center">
                   {/* হেডার: টাইটেল ও মেটা ডেটা */}
                   <div className="mb-6">
                     {article.isEditorial && (

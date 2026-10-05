@@ -72,7 +72,7 @@ function GuestBook() {
   };
 
   return (
-    <div className="p-4 md:p-8 max-w-2xl mx-auto">
+    <div id="wishes" className="p-4 md:p-8 max-w-2xl mx-auto">
       {/* ইনপুট বা লগইন সেকশন */}
       <div className="mb-8 mt-2">
         {!user ? (
